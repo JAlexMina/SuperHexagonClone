@@ -23,14 +23,10 @@ public class SuperHexaSweeperDriver
       JFrame frame = new JFrame("Super Hexa-Sweeper, Ralex inc.");      
       frame.setSize(1280, 720);       
       frame.setLocation(160, 90);       
-      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      
-      
+      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);     
    
       
-      hexaPanel theGame = new hexaPanel();
-   
-       
+      hexaPanel theGame = new hexaPanel();      
       
    
       frame.setContentPane(theGame);
@@ -42,54 +38,45 @@ public class SuperHexaSweeperDriver
       int speed = 7; //Lower is faster
    
       
-      int SSS = 900;
-      int SSS2 = 948;
+
       int SS = 900;
-      int SS2 = 948;
+
       int dir = -1;
       int S = 80;
-      int S2 = 98;
+
       int tS = 108;
       long cO = 0;
       
       int backgroudColor1 [] = {100, 100, 100};
       int backgroudColor2 [] = {200, 200, 200};
+      boolean newObstacle = true;
       //music();
       
       
      
       while (true)
       {
-         time = ((t.getAgeInMiliSeconds(speed)));
-         time2 = t.getAgeInMiliSeconds(1);
+         time = ((t.getAgeInMilliSeconds(speed)));
+         time2 = t.getAgeInMilliSeconds(1);
          
          
               
          if(followTime != time)
          {
-            theGame.run(SS, SS2, SSS, SSS2, dir, S, S2, tS, backgroudColor1, backgroudColor2);
+            theGame.run(newObstacle, SS, dir, S, tS, backgroudColor1, backgroudColor2);
             
             if(SS > S)
             {
-               SS2 = SS2 - 5;
                SS = SS - 5;
+               newObstacle = false;
             }
             else
             {
-               SS2 = 930;
                SS = 900;
+               newObstacle = true;
             }
             
-            if(SSS > S)
-            {
-               SSS2 = SSS2 - 5;
-               SSS = SSS - 5;
-            }
-            else
-            {
-               SSS2 = 930;
-               SSS = 900;
-            }
+
             
             
             //System.out.println(time2/1000);

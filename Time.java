@@ -1,26 +1,15 @@
 public class Time
 {
-   public Time()
+   //do nothing constructor
+   public Time(){}
+   
+   //start time (in milliseconds)
+   private final long createdMillis = System.currentTimeMillis();
+   
+   //method to get the age of the program in milliseconds   
+   public long getAgeInMilliSeconds(int speed) 
    {
-   }
-   
-   
-   private final double createdMillis = System.currentTimeMillis();
-   
-   private final long createdMillis2 = System.currentTimeMillis();
-
-   public double getAgeInDeci() 
-   {
-      double nowMillis = System.currentTimeMillis();
+      long nowMillis = System.currentTimeMillis()/speed;
       return (nowMillis - this.createdMillis);
-   }
-   
-   public long getAgeInMiliSeconds(int speed) 
-   {
-      long nowMillis2 = System.currentTimeMillis()/speed;
-      return (nowMillis2 - this.createdMillis2);
-   }
-   
-   
-   
+   }   
 }

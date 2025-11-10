@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D.Double;
 import java.awt.geom.Line2D;
+import java.util.ArrayList;
 
 
 
@@ -23,25 +24,23 @@ public class hexaPanel extends JPanel implements KeyListener
    int r = 0;
    
    
-   private int Cx = 600;
-   private int Cy = 300;
+   private int CenterPointx = 600;
+   private int CenterPointy = 300;
    
    
-   private int triangleX_1 = (Cx);
+   private int triangleX_1 = (CenterPointx);
  
-   private int triangleY_1 = (Cy - 108);
+   private int triangleY_1 = (CenterPointy - 108);
 
    
    private int tS = 0;
    
    private int tAngle = 270;
+   private boolean rightPressed = false;
+   private boolean leftPressed = false;
    
-
-   
-   
-  
-   
-   
+   private int objRotation = 0;
+   private int currentObstacle = 1;
    
    
    private BufferedImage hexaImage;
@@ -51,7 +50,7 @@ public class hexaPanel extends JPanel implements KeyListener
 
    
    Time t = new Time();
-   int time = (int)(t.getAgeInMiliSeconds(1))/1000;
+   int time = (int)(t.getAgeInMilliSeconds(1))/1000;
    
   
    public void setTS(int _ts)
@@ -88,7 +87,7 @@ public class hexaPanel extends JPanel implements KeyListener
    @Override
    public void keyTyped (KeyEvent e)
    {
-      //System.out.println("KeyTyped");
+      System.out.println("KeyTyped");
    
    }
    
@@ -101,87 +100,246 @@ public class hexaPanel extends JPanel implements KeyListener
       if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D)
       {
          
-         for(int i = 0; i < 10; i++)
-         {
-            triangleX_1 = (int)(tS * (Math.cos( Math.toRadians(tAngle))) + Cx + 10);  
-            triangleY_1 = (int)(tS * (Math.sin( Math.toRadians(tAngle))) + Cy + 10);  
-            tAngle = tAngle + 1;
-            repaint();
-         }
+         rightPressed = true;
          
-         //System.out.println("R KeyPressed");
+         System.out.println("R KeyPressed");
       }
       else if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A)
       {
          
-         for(int i = 0; i < 10; i++)
-         {
-            triangleX_1 = (int)(tS * (Math.cos( Math.toRadians(tAngle))) + Cx + 10);  
-            triangleY_1 = (int)(tS * (Math.sin( Math.toRadians(tAngle))) + Cy + 10);  
-            tAngle = tAngle - 1;
-            repaint();
-         }
+         leftPressed = true;
          
          
-         //System.out.println("L KeyPressed");
+         System.out.println("L KeyPressed");
       }
-      repaint();
    }
    
    @Override
    public void keyReleased(KeyEvent e)
    {
-   
+      int key = e.getKeyCode();
+      
+      if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D)
+      {
+         
+         rightPressed = false;
+         
+         System.out.println("R KeyPressed");
+      }
+      else if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A)
+      {
+         
+
+         leftPressed = false;
+         
+         System.out.println("L KeyPressed");
+      }
    }  
    
    
    
-   public void run(int SS, int SS2, int SSS, int SSS2, int dir, int S, int S2, int tS, int [] backgroudColor1, int [] backgroudColor2)
+   public void run(boolean newObstacle, int SS, int dir, int S, int tS, int [] backgroudColor1, int [] backgroudColor2)
    {   
       
-      int yy1 = (int)(Math.sin( Math.toRadians( 60 ) ) * SS);
-      int xx1 = (int)(Math.cos( Math.toRadians( 60 ) ) * SS);
-      int yy2 = (int)(Math.sin( Math.toRadians( 60 ) ) * SS2);
-      int xx2 = (int)(Math.cos( Math.toRadians( 60 ) ) * SS2);
-      int xx3 = SS;
-      int xx4 = SS2;
-   
-      int polygonXXs [] = {(Cx + xx4), (Cx + xx2),(Cx - xx2), (Cx - xx4), (Cx - xx2), (Cx + xx2), (Cx + xx1), (Cx - xx1), (Cx - xx3), (Cx - xx1), (Cx + xx1), (Cx + xx3)};
-      int polygonYYs [] = {(Cy), (Cy + yy2), (Cy + yy2), (Cy), (Cy - yy2), (Cy - yy2), (Cy - yy1), (Cy - yy1), (Cy), (Cy + yy1), (Cy + yy1), (Cy)};
+      //update keys
+      if (rightPressed)
+      {
+            triangleX_1 = (int)(tS * (Math.cos( Math.toRadians(tAngle))) + CenterPointx + 10);  
+            triangleY_1 = (int)(tS * (Math.sin( Math.toRadians(tAngle))) + CenterPointy + 10);  
+            tAngle = tAngle + 3;
+      }
+      else if (leftPressed)
+      {
+            triangleX_1 = (int)(tS * (Math.cos( Math.toRadians(tAngle))) + CenterPointx + 10);  
+            triangleY_1 = (int)(tS * (Math.sin( Math.toRadians(tAngle))) + CenterPointy + 10);  
+            tAngle = tAngle - 3;
+      }
       
-      int yyy1 = (int)(Math.sin( Math.toRadians( 60 ) ) * SSS);
-      int xxx1 = (int)(Math.cos( Math.toRadians( 60 ) ) * SSS);
-      int yyy2 = (int)(Math.sin( Math.toRadians( 60 ) ) * SSS2);
-      int xxx2 = (int)(Math.cos( Math.toRadians( 60 ) ) * SSS2);
-      int xxx3 = SSS;
-      int xxx4 = SSS2;
+//                HEXAGON SHAPE DIAGRAM
+//_________________________________________________________________________________
+//
+//                                         yDist2
+//                                           |   
+//                                   yDist1  |
+//                                     |     | 
+//                                     v     v
+//
+//                             O           O -
+//                              O      -  O  |
+//                                     |     |
+//                                     |     |
+//                                     |     |
+// SS_plus_OW -->      |-------------| |     |
+//                     O O           O -     -   O O
+// SS         -->        |-----------|
+//                    
+//                     
+//                             |----|
+// xDist1     -->               O         O 
+//                             O           O
+// xDist2     -->              |-----|
+//
+//
+// 
+      
+      double x1 = 0.5; //( Math.cos( Math.toRadians( 60 )) );
+      double y1 = 0.866025403784; //( Math.sin( Math.toRadians( 60 )) );
+      
+      ////////////////////////////////////////Center Hexagon//////////////////////////////////////////////////////////// 
+      
+      int innerHexagonWidth = 18;
+      int S_plus_IHW = S + innerHexagonWidth;
+      
+      int ih_xDist1 = (int)(x1*S);
+      int in_xDist2 = (int)(x1*S_plus_IHW);
+      
+      int ih_yDist1 = (int)(y1*S);
+      int in_yDist2 = (int)(y1*S_plus_IHW);
    
-      int polygonXXXs [] = {(Cx + xxx4), (Cx + xxx2), (Cx - xxx2), (Cx - xxx4), (Cx - xxx2), (Cx + xxx2), (Cx + xxx1), (Cx - xxx1), (Cx - xxx3), (Cx - xxx1), (Cx + xxx1), (Cx + xxx3)};
-      int polygonYYYs [] = {(Cy), (Cy + yyy2), (Cy + yyy2), (Cy), (Cy - yyy2), (Cy - yyy2), (Cy - yyy1), (Cy - yyy1), (Cy), (Cy + yyy1), (Cy + yyy1), (Cy)};
+      int innerHexagonXs [] = {(CenterPointx + S_plus_IHW), (CenterPointx + in_xDist2), (CenterPointx - in_xDist2), 
+                               (CenterPointx - S_plus_IHW), (CenterPointx - in_xDist2),(CenterPointx + in_xDist2), 
+                               (CenterPointx + S_plus_IHW), (CenterPointx + S), (CenterPointx + ih_xDist1), 
+                               (CenterPointx - ih_xDist1),(CenterPointx - S), (CenterPointx - ih_xDist1), 
+                               (CenterPointx + ih_xDist1), (CenterPointx + S)};
+                               
+      int innerHexagonYs [] = {(CenterPointy), (CenterPointy + in_yDist2), (CenterPointy + in_yDist2), 
+                               (CenterPointy), (CenterPointy - in_yDist2), (CenterPointy - in_yDist2),
+                               (CenterPointy), (CenterPointy), (CenterPointy - ih_yDist1), 
+                               (CenterPointy - ih_yDist1), (CenterPointy), (CenterPointy + ih_yDist1),
+                               (CenterPointy + ih_yDist1), (CenterPointy)};
+                               
+                               
+      ///////////////////////////////////////////End Center Hexagon/////////////////////////////////////////////////////
+      
+      ///////////////////////////////////////////////Obstacle///////////////////////////////////////////////////////////
+      
+      ArrayList<int[]> obstacleListXs = new ArrayList<>();
+      ArrayList<int[]> obstacleListYs = new ArrayList<>();    
+      
+      int obstacleWidth = 30;      
+      int SS_plus_OW = SS + obstacleWidth;
+      
+      int obst_xDist1 = (int)(x1*SS);
+      int obst_xDist2 = (int)(x1*SS_plus_OW);
+      
+      int obst_yDist1 = (int)(y1*SS);
+      int obst_yDist2 = (int)(y1*SS_plus_OW);
+      
+      //obstacle type
+      Random random = new Random();
+      if(newObstacle)
+      {
+         currentObstacle = random.nextInt(3) + 1; // Generates a number from 1 to 3 
+      }
+
+      if(currentObstacle == 1)
+      {
+         ///////// (4 side) /////////
+         int obstacleXs [] = {(CenterPointx + SS),          (CenterPointx + SS_plus_OW),
+                               (CenterPointx + obst_xDist2), (CenterPointx - obst_xDist2), 
+                               (CenterPointx - SS_plus_OW),  (CenterPointx - obst_xDist2), 
+                               (CenterPointx + obst_xDist2), (CenterPointx + obst_xDist1), 
+                               (CenterPointx - obst_xDist1), (CenterPointx - SS), 
+                               (CenterPointx - obst_xDist1), (CenterPointx + obst_xDist1)};
+                              
+         int obstacleYs [] = {(CenterPointy),                (CenterPointy), 
+                               (CenterPointy + obst_yDist2 ), (CenterPointy + obst_yDist2), 
+                               (CenterPointy),                (CenterPointy - obst_yDist2 ), 
+                               (CenterPointy - obst_yDist2),  (CenterPointy - obst_yDist1), 
+                               (CenterPointy - obst_yDist1),  (CenterPointy), 
+                               (CenterPointy + obst_yDist1),  (CenterPointy + obst_yDist1)};
+                               
+         obstacleListXs.add(obstacleXs);
+         obstacleListYs.add(obstacleYs);
+      }
+      else if(currentObstacle == 2)
+      {                 
+         ///////// (1 side) /////////
+         int obstacleXs [] = {(CenterPointx + SS),          (CenterPointx + SS_plus_OW),
+                              (CenterPointx + obst_xDist2), (CenterPointx + obst_xDist1)};
+                              
+         int obstacleYs [] = {(CenterPointy),                (CenterPointy), 
+                              (CenterPointy + obst_yDist2 ), (CenterPointy + obst_yDist1)};
+                               
+         obstacleListXs.add(obstacleXs);
+         obstacleListYs.add(obstacleYs);
+      }
+      else if(currentObstacle == 3)
+      {                 
+         ///////// (2 side opposite) /////////
+         int obstacleXs [] = {(CenterPointx + SS),          (CenterPointx + SS_plus_OW),
+                              (CenterPointx + obst_xDist2), (CenterPointx + obst_xDist1)};
+                              
+         int obstacleYs [] = {(CenterPointy),                (CenterPointy), 
+                              (CenterPointy + obst_yDist2 ), (CenterPointy + obst_yDist1)};
+                               
+         obstacleListXs.add(obstacleXs);
+         obstacleListYs.add(obstacleYs);
+         
+         int obstacleXs2 [] = {(CenterPointx - SS),          (CenterPointx - SS_plus_OW),
+                               (CenterPointx - obst_xDist2), (CenterPointx - obst_xDist1)};
+                              
+         int obstacleYs2 [] = {(CenterPointy),                (CenterPointy), 
+                               (CenterPointy - obst_yDist2 ), (CenterPointy - obst_yDist1)};
+                               
+         obstacleListXs.add(obstacleXs2);
+         obstacleListYs.add(obstacleYs2);
+      }
+                           
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      
+      //rotate obstacles randomly
+      
+      
+      
+         // allowed rotation angles in degrees
+         int[] angles = {60, 120, 180, 240, 300};
+         if(newObstacle)
+         {
+            objRotation = random.nextInt(angles.length);
+         }
+         
+         for (int i = 0; i < obstacleListXs.size(); i++)  
+         {
+            for (int j = 0; j < obstacleListXs.get(i).length; j++) 
+            {
+               // pick a random angle from the list
+               int angleDeg = angles[objRotation];
+               double angleRad = Math.toRadians(angleDeg);
+               
+               // translate point so that (cx, cy) becomes origin
+               double dx = obstacleListXs.get(i)[j] - CenterPointx;
+               double dy = obstacleListYs.get(i)[j] - CenterPointy;
+               
+               // apply rotation:
+               // x' = dx*cosθ - dy*sinθ
+               // y' = dx*sinθ + dy*cosθ
+               double rotatedX = dx * Math.cos(angleRad) - dy * Math.sin(angleRad);
+               double rotatedY = dx * Math.sin(angleRad) + dy * Math.cos(angleRad);
+               
+               //System.out.println("(" + (int) Math.round(CenterPointx + rotatedX) + ", " + (int) Math.round(CenterPointy + rotatedY) + ") is (" + obstacleListXs.get(i)[j] + ", " + 
+               //                     obstacleListYs.get(i)[j] + ") rotated " + angleDeg + " around (" + CenterPointx + ", " + CenterPointy + ")");
+         
+               // translate back and store
+               obstacleListXs.get(i)[j] = (int) Math.round(CenterPointx + rotatedX);
+               obstacleListYs.get(i)[j] = (int) Math.round(CenterPointy + rotatedY);
+               
+               
+            }
+         }
+      
+      
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////                     
+
 
       
-      int y1 = (int)(Math.sin( Math.toRadians( 60 ) ) * S);
-      int x1 = (int)(Math.cos( Math.toRadians( 60 ) ) * S);
-      int y2 = (int)(Math.sin( Math.toRadians( 60 ) ) * S2);
-      int x2 = (int)(Math.cos( Math.toRadians( 60 ) ) * S2);
-      int x3 = S;
-      int x4 = S2;
-   
-      int polygonXs [] = {(Cx + x4), (Cx + x2),(Cx - x2), (Cx - x4), (Cx - x2), (Cx + x2), (Cx + x4), (Cx + x3), (Cx + x1), (Cx - x1), (Cx - x3), (Cx - x1), (Cx + x1), (Cx + x3)};
-      int polygonYs [] = {(Cy), (Cy + y2), (Cy + y2), (Cy), (Cy - y2), (Cy - y2), (Cy), (Cy), (Cy - y1), (Cy - y1), (Cy), (Cy + y1), (Cy + y1), (Cy)};
+      ArrayList<Shape> obstacleShapes = new ArrayList<>();
+      for (int i = 0; i < obstacleListXs.size(); i++)  
+      {
+         obstacleShapes.add(new Polygon(obstacleListXs.get(i), obstacleListYs.get(i), obstacleListXs.get(i).length));
+      }     
       
-      
-      
-      
-      
-      Shape shape2 = new Polygon(polygonXXs, polygonYYs, polygonXXs.length);
-      Shape shape3 = new Polygon(polygonXXXs, polygonYYYs, polygonXXXs.length);
-      Shape shape = new Polygon(polygonXs, polygonYs, polygonXs.length);
-
-      
-      
-     
-       
+      Shape innerHexagon = new Polygon(innerHexagonXs, innerHexagonYs, innerHexagonXs.length);
    
       
       int circleX = triangleX_1;
@@ -195,23 +353,26 @@ public class hexaPanel extends JPanel implements KeyListener
        
       g2d.setTransform(identity);
    
-      clear(g2d, backgroudColor1, backgroudColor2, S, S2);
+      clear(g2d, backgroudColor1, backgroudColor2, S, (S+18));
       rotate(g2d, dir);
           
       
       g2d.setColor(new Color(0, 0, 0));
       
-      g2d.draw(new Line2D.Double(Cx + x3, Cy, Cx + 900, Cy));
-      g2d.draw(new Line2D.Double(Cx - x3, Cy, Cx - 900, Cy));
-      g2d.draw(new Line2D.Double(Cx + x2, Cy + y2, Cx + 1000, ((((y1-13)*1000)/x1) + Cx)));
-      g2d.draw(new Line2D.Double(Cx - x2, Cy + y2, Cx - 1000, ((((y1-13)*1000)/x1) + Cx)));
+      g2d.draw(new Line2D.Double(CenterPointx + (int)(S+innerHexagonWidth), CenterPointy, CenterPointx + 900, CenterPointy));
+      g2d.draw(new Line2D.Double(CenterPointx - (int)(S+innerHexagonWidth), CenterPointy, CenterPointx - 900, CenterPointy));
+      g2d.draw(new Line2D.Double(CenterPointx + (int)(x1*(S+innerHexagonWidth)), CenterPointy + (int)(y1*(S+innerHexagonWidth)), CenterPointx + 1000, (((((int)(y1*S)-13)*1000)/(int)(x1*S)) + CenterPointx)));
+      g2d.draw(new Line2D.Double(CenterPointx - (int)(x1*(S+innerHexagonWidth)), CenterPointy + (int)(y1*(S+innerHexagonWidth)), CenterPointx - 1000, (((((int)(y1*S)-13)*1000)/(int)(x1*S)) + CenterPointx)));
       
-      g2d.draw(new Line2D.Double(Cx + x2, Cy - y2, Cx + 1000, ((-((y1+13)*1000)/x1) + Cx)));
-      g2d.draw(new Line2D.Double(Cx - x2, Cy - y2, Cx - 1000, ((-((y1+13)*1000)/x1) + Cx)));
+      g2d.draw(new Line2D.Double(CenterPointx + (int)(x1*(S+innerHexagonWidth)), CenterPointy - (int)(y1*(S+innerHexagonWidth)), CenterPointx + 1000, ((-(((int)(y1*S)+13)*1000)/(int)(x1*S)) + CenterPointx)));
+      g2d.draw(new Line2D.Double(CenterPointx - (int)(x1*(S+innerHexagonWidth)), CenterPointy - (int)(y1*(S+innerHexagonWidth)), CenterPointx - 1000, ((-(((int)(y1*S)+13)*1000)/(int)(x1*S)) + CenterPointx)));
        
-      g2d.fill(shape);
-      //g2d.fill(shape2);
-      g2d.fill(shape3);
+      g2d.fill(innerHexagon);
+      
+      for (Shape obstacle : obstacleShapes) 
+      {
+         g2d.fill(obstacle);
+      }
 
       g2d.fillOval((circleX - 20), (circleY - 20), (20), (20)); 
       
@@ -229,7 +390,7 @@ public class hexaPanel extends JPanel implements KeyListener
    
    public void rotate(Graphics2D g2d, int dir)
    {
-      g2d.rotate(Math.toRadians(r), (Cx), (Cy)); // rotates about transformed origin
+      g2d.rotate(Math.toRadians(r), (CenterPointx), (CenterPointy)); // rotates about transformed origin
       r = r + dir;
    }
    
@@ -239,8 +400,8 @@ public class hexaPanel extends JPanel implements KeyListener
       
       /*int y1 = (int)(Math.sin( Math.toRadians( 60 ) ) * S);
       int x1 = (int)(Math.cos( Math.toRadians( 60 ) ) * S);
-      int y2 = (int)(Math.sin( Math.toRadians( 60 ) ) * S2);
-      int x2 = (int)(Math.cos( Math.toRadians( 60 ) ) * S2);
+      int y1 = (int)(Math.sin( Math.toRadians( 60 ) ) * S2);
+      int x1 = (int)(Math.cos( Math.toRadians( 60 ) ) * S2);
       int x3 = S;
       int x4 = S2;*/
       
