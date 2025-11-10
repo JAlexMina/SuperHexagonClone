@@ -14,9 +14,6 @@ import java.util.ArrayList;
 
 
 
-
-
-
 public class hexaPanel extends JPanel implements KeyListener
 {
    private final int x = 1280;
@@ -47,6 +44,7 @@ public class hexaPanel extends JPanel implements KeyListener
 
 
    private Graphics hexaBuffer;
+   ArrayList<Obstacle> obstacles;
 
    
    Time t = new Time();
@@ -65,13 +63,11 @@ public class hexaPanel extends JPanel implements KeyListener
       
       hexaImage = new BufferedImage (x, y, BufferedImage.TYPE_INT_RGB);
       hexaBuffer = hexaImage.getGraphics();
+      obstacles = new ArrayList<>();
       
       addKeyListener(this);
       
-      setFocusable(true); 
-      
-         
-   
+      setFocusable(true);  
    }
    
    
@@ -87,8 +83,6 @@ public class hexaPanel extends JPanel implements KeyListener
    @Override
    public void keyTyped (KeyEvent e)
    {
-      System.out.println("KeyTyped");
-   
    }
    
    @Override
@@ -99,18 +93,11 @@ public class hexaPanel extends JPanel implements KeyListener
       
       if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D)
       {
-         
          rightPressed = true;
-         
-         System.out.println("R KeyPressed");
       }
       else if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A)
       {
-         
          leftPressed = true;
-         
-         
-         System.out.println("L KeyPressed");
       }
    }
    
@@ -120,19 +107,12 @@ public class hexaPanel extends JPanel implements KeyListener
       int key = e.getKeyCode();
       
       if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D)
-      {
-         
+      {      
          rightPressed = false;
-         
-         System.out.println("R KeyPressed");
       }
       else if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A)
       {
-         
-
          leftPressed = false;
-         
-         System.out.println("L KeyPressed");
       }
    }  
    
@@ -174,7 +154,7 @@ public class hexaPanel extends JPanel implements KeyListener
 // SS         -->        |-----------|
 //                    
 //                     
-//                             |----|
+//                              |----|
 // xDist1     -->               O         O 
 //                             O           O
 // xDist2     -->              |-----|
@@ -213,130 +193,9 @@ public class hexaPanel extends JPanel implements KeyListener
       
       ///////////////////////////////////////////////Obstacle///////////////////////////////////////////////////////////
       
-      ArrayList<int[]> obstacleListXs = new ArrayList<>();
-      ArrayList<int[]> obstacleListYs = new ArrayList<>();    
-      
-      int obstacleWidth = 30;      
-      int SS_plus_OW = SS + obstacleWidth;
-      
-      int obst_xDist1 = (int)(x1*SS);
-      int obst_xDist2 = (int)(x1*SS_plus_OW);
-      
-      int obst_yDist1 = (int)(y1*SS);
-      int obst_yDist2 = (int)(y1*SS_plus_OW);
-      
-      //obstacle type
-      Random random = new Random();
       if(newObstacle)
       {
-         currentObstacle = random.nextInt(3) + 1; // Generates a number from 1 to 3 
-      }
-
-      if(currentObstacle == 1)
-      {
-         ///////// (4 side) /////////
-         int obstacleXs [] = {(CenterPointx + SS),          (CenterPointx + SS_plus_OW),
-                               (CenterPointx + obst_xDist2), (CenterPointx - obst_xDist2), 
-                               (CenterPointx - SS_plus_OW),  (CenterPointx - obst_xDist2), 
-                               (CenterPointx + obst_xDist2), (CenterPointx + obst_xDist1), 
-                               (CenterPointx - obst_xDist1), (CenterPointx - SS), 
-                               (CenterPointx - obst_xDist1), (CenterPointx + obst_xDist1)};
-                              
-         int obstacleYs [] = {(CenterPointy),                (CenterPointy), 
-                               (CenterPointy + obst_yDist2 ), (CenterPointy + obst_yDist2), 
-                               (CenterPointy),                (CenterPointy - obst_yDist2 ), 
-                               (CenterPointy - obst_yDist2),  (CenterPointy - obst_yDist1), 
-                               (CenterPointy - obst_yDist1),  (CenterPointy), 
-                               (CenterPointy + obst_yDist1),  (CenterPointy + obst_yDist1)};
-                               
-         obstacleListXs.add(obstacleXs);
-         obstacleListYs.add(obstacleYs);
-      }
-      else if(currentObstacle == 2)
-      {                 
-         ///////// (1 side) /////////
-         int obstacleXs [] = {(CenterPointx + SS),          (CenterPointx + SS_plus_OW),
-                              (CenterPointx + obst_xDist2), (CenterPointx + obst_xDist1)};
-                              
-         int obstacleYs [] = {(CenterPointy),                (CenterPointy), 
-                              (CenterPointy + obst_yDist2 ), (CenterPointy + obst_yDist1)};
-                               
-         obstacleListXs.add(obstacleXs);
-         obstacleListYs.add(obstacleYs);
-      }
-      else if(currentObstacle == 3)
-      {                 
-         ///////// (2 side opposite) /////////
-         int obstacleXs [] = {(CenterPointx + SS),          (CenterPointx + SS_plus_OW),
-                              (CenterPointx + obst_xDist2), (CenterPointx + obst_xDist1)};
-                              
-         int obstacleYs [] = {(CenterPointy),                (CenterPointy), 
-                              (CenterPointy + obst_yDist2 ), (CenterPointy + obst_yDist1)};
-                               
-         obstacleListXs.add(obstacleXs);
-         obstacleListYs.add(obstacleYs);
-         
-         int obstacleXs2 [] = {(CenterPointx - SS),          (CenterPointx - SS_plus_OW),
-                               (CenterPointx - obst_xDist2), (CenterPointx - obst_xDist1)};
-                              
-         int obstacleYs2 [] = {(CenterPointy),                (CenterPointy), 
-                               (CenterPointy - obst_yDist2 ), (CenterPointy - obst_yDist1)};
-                               
-         obstacleListXs.add(obstacleXs2);
-         obstacleListYs.add(obstacleYs2);
-      }
-                           
-      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      
-      //rotate obstacles randomly
-      
-      
-      
-         // allowed rotation angles in degrees
-         int[] angles = {60, 120, 180, 240, 300};
-         if(newObstacle)
-         {
-            objRotation = random.nextInt(angles.length);
-         }
-         
-         for (int i = 0; i < obstacleListXs.size(); i++)  
-         {
-            for (int j = 0; j < obstacleListXs.get(i).length; j++) 
-            {
-               // pick a random angle from the list
-               int angleDeg = angles[objRotation];
-               double angleRad = Math.toRadians(angleDeg);
-               
-               // translate point so that (cx, cy) becomes origin
-               double dx = obstacleListXs.get(i)[j] - CenterPointx;
-               double dy = obstacleListYs.get(i)[j] - CenterPointy;
-               
-               // apply rotation:
-               // x' = dx*cosθ - dy*sinθ
-               // y' = dx*sinθ + dy*cosθ
-               double rotatedX = dx * Math.cos(angleRad) - dy * Math.sin(angleRad);
-               double rotatedY = dx * Math.sin(angleRad) + dy * Math.cos(angleRad);
-               
-               //System.out.println("(" + (int) Math.round(CenterPointx + rotatedX) + ", " + (int) Math.round(CenterPointy + rotatedY) + ") is (" + obstacleListXs.get(i)[j] + ", " + 
-               //                     obstacleListYs.get(i)[j] + ") rotated " + angleDeg + " around (" + CenterPointx + ", " + CenterPointy + ")");
-         
-               // translate back and store
-               obstacleListXs.get(i)[j] = (int) Math.round(CenterPointx + rotatedX);
-               obstacleListYs.get(i)[j] = (int) Math.round(CenterPointy + rotatedY);
-               
-               
-            }
-         }
-      
-      
-      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////                     
-
-
-      
-      ArrayList<Shape> obstacleShapes = new ArrayList<>();
-      for (int i = 0; i < obstacleListXs.size(); i++)  
-      {
-         obstacleShapes.add(new Polygon(obstacleListXs.get(i), obstacleListYs.get(i), obstacleListXs.get(i).length));
+         obstacles.add(new Obstacle(SS, S, CenterPointx, CenterPointy));
       }     
       
       Shape innerHexagon = new Polygon(innerHexagonXs, innerHexagonYs, innerHexagonXs.length);
@@ -369,22 +228,29 @@ public class hexaPanel extends JPanel implements KeyListener
        
       g2d.fill(innerHexagon);
       
-      for (Shape obstacle : obstacleShapes) 
+
+      for(int k = 0; k < obstacles.size(); k++)
       {
-         g2d.fill(obstacle);
+         Obstacle ob = obstacles.get(k);
+         if(!ob.update(SS, S, CenterPointx, CenterPointy))
+         {
+            //returns false when the obstacle has ended
+            obstacles.remove(k);
+            k--;
+         }
+         else
+         {         
+            for (int i = 0; i < ob.obstacleListXs.size(); i++)  
+            {
+               g2d.fill(new Polygon(ob.obstacleListXs.get(i), ob.obstacleListYs.get(i), ob.obstacleListXs.get(i).length));
+            }
+         }
       }
 
       g2d.fillOval((circleX - 20), (circleY - 20), (20), (20)); 
+
       
-      //System.out.println("circleX: " + circleX);
-      //System.out.println("circleY: " + circleY);
-      
-   
-      
-      repaint();
-      
-      
-      
+      repaint();     
    }
    
    
@@ -398,19 +264,8 @@ public class hexaPanel extends JPanel implements KeyListener
    {
       g2d.setColor(new Color(backgroudColor[0], backgroudColor [1], backgroudColor [2]));
       
-      /*int y1 = (int)(Math.sin( Math.toRadians( 60 ) ) * S);
-      int x1 = (int)(Math.cos( Math.toRadians( 60 ) ) * S);
-      int y1 = (int)(Math.sin( Math.toRadians( 60 ) ) * S2);
-      int x1 = (int)(Math.cos( Math.toRadians( 60 ) ) * S2);
-      int x3 = S;
-      int x4 = S2;*/
-      
       int topCx [] = {};
       int topCy [] = {};
-      
-      
-      
-      //g2d.fillPolygon(topCx, topCy, topCx.length);
       
       g2d.fillRect(0,0,x,y);
       

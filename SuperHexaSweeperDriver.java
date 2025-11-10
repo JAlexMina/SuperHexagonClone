@@ -1,6 +1,7 @@
 import javax.swing.JFrame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.lang.Math;
 //import sun.audio.*;
 import java.io.*;
 
@@ -36,6 +37,7 @@ public class SuperHexaSweeperDriver
       
       double followTime = 0;
       int speed = 7; //Lower is faster
+      long prev_beatNumber = 0;
    
       
 
@@ -45,11 +47,12 @@ public class SuperHexaSweeperDriver
       int S = 80;
 
       int tS = 108;
-      long cO = 0;
+      boolean cO = false;
       
       int backgroudColor1 [] = {100, 100, 100};
       int backgroudColor2 [] = {200, 200, 200};
       boolean newObstacle = true;
+      boolean bounce = false;
       //music();
       
       
@@ -80,15 +83,19 @@ public class SuperHexaSweeperDriver
             
             
             //System.out.println(time2/1000);
-            followTime = time; 
+            followTime = time;
             
-            if ((time2/1000) % 2 == 0)
+            int bpm = 90; // beats per minute
+            long beatLength = 60000 / bpm;      // ms per beat
+            long beatNumber = time2 / beatLength; 
+            
+            if (beatNumber % 2 == 0)
             {
-               //tS++;
-               //S++;
-               //S2++;
-               //SS++;
-               //SS2++;
+               // tS++;
+//                S++;
+// 
+//                SS++;
+
                
                theGame.setTS(tS);
                
@@ -96,13 +103,13 @@ public class SuperHexaSweeperDriver
                backgroudColor2 [0] = backgroudColor2 [1] = backgroudColor2 [2] = 100;
                
             }
-            else if ((time2/1000) % 2 == 1)
+            else
             {
-               //tS--;
-               //S--;
-               //S2--;
-               //SS--;
-               //SS2--;
+//                tS--;
+//                S--;
+// 
+//                SS--;
+
                
                theGame.setTS(tS);
                
@@ -111,11 +118,23 @@ public class SuperHexaSweeperDriver
             }
             
             
-            if ((time2/1000) % 5 == 0 && cO != time2/1000)
+            if ((beatNumber % 5 == 0 && beatNumber % 15 != 0) && beatNumber != prev_beatNumber) // normal direction switch
             {
-               dir = dir * (-1);
-               cO = time2/1000;
-            }     
+               dir = Math.clamp(dir * (-1), -1, 1);
+               cO = false;
+            }            
+             else if (beatNumber % 15 == 0 && beatNumber != prev_beatNumber) // hyper speed directions switch
+            {
+               dir = Math.clamp(dir * (-2), -2, 2);
+               cO = true;
+            }
+            else if (beatNumber % 3 == 0 && cO && beatNumber != prev_beatNumber) // hyper speed direction switch on beat catch
+            {
+               dir = Math.clamp(dir * (-1), -1, 1);
+               cO = false;
+            }
+
+            prev_beatNumber = beatNumber;      
             
              
          }
