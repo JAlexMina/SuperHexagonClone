@@ -1,5 +1,5 @@
 !1689;s
-A
+J
 SAU0JGRASP_MAIN_BOUNDS=%<CONTROL_SHELL_BOUNDS>\012PATH+=%<JGRASP_PATHS>%;\012PATH=+%;%<JGRASP_C_PATHS>\012CYGWIN=nodosfilewarning\012GCC_COLORS=\012-Run\012ADD_EXE_PATH==Y\012
 SCU0JGRASP_MAIN_BOUNDS=%<CONTROL_SHELL_BOUNDS>\012PATH+=%<JGRASP_PATHS>%;\012PATH=+%;%<JGRASP_C_PATHS>\012CYGWIN=nodosfilewarning\012GCC_COLORS=\012-Run\012ADD_EXE_PATH==Y\012
 S+U0JGRASP_MAIN_BOUNDS=%<CONTROL_SHELL_BOUNDS>\012PATH+=%<JGRASP_PATHS>%;\012PATH=+%;%<JGRASP_C_PATHS>\012CYGWIN=nodosfilewarning\012GCC_COLORS=\012-Run\012ADD_EXE_PATH==Y\012
@@ -13,11 +13,15 @@ s#i0
 s#k0
 s#j0
 s#l0
-!68;g
+!109;g
 %\011hexaPanel.java
+%\011MusicPlayer.java
+%\011Obstacle.java
 %\011SuperHexaSweeperDriver.java
 %\011Time.java
-!68;f
+!109;f
 %\011hexaPanel.java
+%\011MusicPlayer.java
+%\011Obstacle.java
 %\011SuperHexaSweeperDriver.java
 %\011Time.java

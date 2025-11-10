@@ -232,7 +232,7 @@ public class hexaPanel extends JPanel implements KeyListener
       for(int k = 0; k < obstacles.size(); k++)
       {
          Obstacle ob = obstacles.get(k);
-         if(!ob.update(SS, S, CenterPointx, CenterPointy))
+         if(!ob.update(S, CenterPointx, CenterPointy))
          {
             //returns false when the obstacle has ended
             obstacles.remove(k);

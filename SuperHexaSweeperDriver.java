@@ -2,7 +2,9 @@ import javax.swing.JFrame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.lang.Math;
-//import sun.audio.*;
+import javax.sound.sampled.*;
+import java.io.File;
+import java.io.IOException;
 import java.io.*;
 
 
@@ -53,7 +55,9 @@ public class SuperHexaSweeperDriver
       int backgroudColor2 [] = {200, 200, 200};
       boolean newObstacle = true;
       boolean bounce = false;
-      //music();
+      MusicPlayer mp = new MusicPlayer();
+      mp.play("song.wav");
+
       
       
      
@@ -65,29 +69,31 @@ public class SuperHexaSweeperDriver
          
               
          if(followTime != time)
-         {
-            theGame.run(newObstacle, SS, dir, S, tS, backgroudColor1, backgroudColor2);
-            
-            if(SS > S)
-            {
-               SS = SS - 5;
-               newObstacle = false;
-            }
-            else
-            {
-               SS = 900;
-               newObstacle = true;
-            }
-            
-
-            
+         {  
             
             //System.out.println(time2/1000);
             followTime = time;
             
             int bpm = 90; // beats per minute
             long beatLength = 60000 / bpm;      // ms per beat
-            long beatNumber = time2 / beatLength; 
+            long beatNumber = time2 / beatLength;
+            
+            
+            
+            if(beatNumber % 1 == 0 && beatNumber != prev_beatNumber)
+            {
+               newObstacle = true;
+            }
+            else
+            {
+               newObstacle = false;
+            }
+            
+            theGame.run(newObstacle, SS, dir, S, tS, backgroudColor1, backgroudColor2);
+            
+            
+            
+             
             
             if (beatNumber % 2 == 0)
             {
@@ -149,29 +155,7 @@ public class SuperHexaSweeperDriver
          
    }
    
-   
-//    public static void music()
-//    {
-//       AudioPlayer MGP = AudioPlayer.player;
-//       AudioStream BGM;
-//       AudioData MD;
-//       ContinuousAudioDataStream loop = null;
-//      
-//      
-//       try
-//       {
-//          BGM = new AudioStream(new FileInputStream("song__.wav"));
-//          MD = BGM.getData();
-//          loop = new ContinuousAudioDataStream(MD);
-//       }
-//       catch(IOException error){
-//          System.out.println("CannotFindAudio");
-//       }
-//      
-//      
-//       MGP.start(loop);
-//      
-//    } 
+ 
      
   
 }
